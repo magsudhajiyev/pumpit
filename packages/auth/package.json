@@ -1,0 +1,23 @@
+{
+  "name": "@pumpit/auth",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "next-auth": "^4.24.6",
+    "@auth/prisma-adapter": "^1.4.0",
+    "@pumpit/database": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "next": "^14.0.0"
+  }
+}

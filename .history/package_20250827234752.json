@@ -1,0 +1,24 @@
+{
+  "name": "pumpit",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @pumpit/web dev",
+    "build": "pnpm run build --filter=!@pumpit/web && pnpm --filter @pumpit/web build",
+    "lint": "pnpm --recursive lint",
+    "type-check": "pnpm --recursive type-check",
+    "db:generate": "pnpm --filter @pumpit/database db:generate",
+    "db:push": "pnpm --filter @pumpit/database db:push",
+    "db:migrate": "pnpm --filter @pumpit/database db:migrate",
+    "db:studio": "pnpm --filter @pumpit/database db:studio",
+    "db:seed": "pnpm --filter @pumpit/database db:seed"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20"
+  },
+  "packageManager": "pnpm@8.15.1",
+  "engines": {
+    "node": ">=18"
+  }
+}

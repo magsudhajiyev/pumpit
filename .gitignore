@@ -1,0 +1,23 @@
+.history
+node_modules
+# Next.js
+.next/
+out/
+dist/
+
+# Build outputs
+*.tsbuildinfo
+
+# Cache
+.cache/
+
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Package manager files
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
