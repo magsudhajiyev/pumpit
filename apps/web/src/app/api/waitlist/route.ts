@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@pumpit/database"
+import { prisma } from "@/lib/database"
 
 export async function POST(request: NextRequest) {
   try {

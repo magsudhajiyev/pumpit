@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
-import { authConfig } from "@pumpit/auth"
-import { prisma } from "@pumpit/database"
+import { authConfig } from "@/lib/auth"
+import { prisma } from "@/lib/database"
 import { nanoid } from "nanoid"
 
 export async function GET(request: NextRequest) {

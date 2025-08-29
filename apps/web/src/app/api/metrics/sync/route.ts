@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@pumpit/database"
+import { prisma } from "@/lib/database"
 
 // This endpoint can be called by a cron job to sync metrics
 export async function POST(request: NextRequest) {
@@ -42,8 +42,11 @@ export async function POST(request: NextRequest) {
       try {
         let metrics = null
 
+        // TODO: Re-enable social integrations after fixing dependency issues
+        // Social metrics integration temporarily disabled for deployment
+        /*
         if (promotion.platform === 'X' && process.env.TWITTER_BEARER_TOKEN) {
-          const { TwitterIntegration } = await import("../../../../../../packages/social-integrations/src/twitter")
+          const { TwitterIntegration } = await import("@/lib/social-integrations/twitter")
           const twitterClient = new TwitterIntegration(process.env.TWITTER_BEARER_TOKEN)
           
           const tweetId = promotion.platformPostUrl?.match(/status\/(\d+)/)?.[1]
@@ -51,7 +54,7 @@ export async function POST(request: NextRequest) {
             metrics = await twitterClient.getPostMetrics(tweetId)
           }
         } else if (promotion.platform === 'LINKEDIN' && process.env.LINKEDIN_ACCESS_TOKEN) {
-          const { LinkedInIntegration } = await import("../../../../../../packages/social-integrations/src/linkedin")
+          const { LinkedInIntegration } = await import("@/lib/social-integrations/linkedin")
           const linkedInClient = new LinkedInIntegration(process.env.LINKEDIN_ACCESS_TOKEN)
           
           const postId = promotion.platformPostUrl?.match(/posts\/[^\/]+-(\d+)/)?.[1]
@@ -59,7 +62,7 @@ export async function POST(request: NextRequest) {
             metrics = await linkedInClient.getPostMetrics(postId)
           }
         } else if (promotion.platform === 'REDDIT' && process.env.REDDIT_CLIENT_ID) {
-          const { RedditIntegration } = await import("../../../../../../packages/social-integrations/src/reddit")
+          const { RedditIntegration } = await import("@/lib/social-integrations/reddit")
           const redditClient = new RedditIntegration(
             process.env.REDDIT_CLIENT_ID,
             process.env.REDDIT_CLIENT_SECRET!,
@@ -71,6 +74,7 @@ export async function POST(request: NextRequest) {
             metrics = await redditClient.getPostMetrics(postId)
           }
         }
+        */
 
         if (metrics) {
           // Store metrics in database (we'll need to create a metrics table)

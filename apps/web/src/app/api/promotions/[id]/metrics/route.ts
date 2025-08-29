@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
-import { authConfig } from "@pumpit/auth"
-import { prisma } from "@pumpit/database"
+import { authConfig } from "@/lib/auth"
+import { prisma } from "@/lib/database"
 
 export async function GET(
   request: NextRequest,
@@ -75,8 +75,11 @@ export async function GET(
     let socialMetrics = null
 
     try {
+      // TODO: Re-enable social integrations after fixing dependency issues
+      // Social metrics integration temporarily disabled for deployment
+      /*
       if (promotion.platform === 'X' && process.env.TWITTER_BEARER_TOKEN) {
-        const { TwitterIntegration } = await import("../../../../../../../packages/social-integrations/src/twitter")
+        const { TwitterIntegration } = await import("@/lib/social-integrations/twitter")
         const twitterClient = new TwitterIntegration(process.env.TWITTER_BEARER_TOKEN)
         
         if (promotion.platformPostUrl) {
@@ -86,7 +89,7 @@ export async function GET(
           }
         }
       } else if (promotion.platform === 'LINKEDIN' && process.env.LINKEDIN_ACCESS_TOKEN) {
-        const { LinkedInIntegration } = await import("../../../../../../../packages/social-integrations/src/linkedin")
+        const { LinkedInIntegration } = await import("@/lib/social-integrations/linkedin")
         const linkedInClient = new LinkedInIntegration(process.env.LINKEDIN_ACCESS_TOKEN)
         
         if (promotion.platformPostUrl) {
@@ -96,7 +99,7 @@ export async function GET(
           }
         }
       } else if (promotion.platform === 'REDDIT' && process.env.REDDIT_CLIENT_ID) {
-        const { RedditIntegration } = await import("../../../../../../../packages/social-integrations/src/reddit")
+        const { RedditIntegration } = await import("@/lib/social-integrations/reddit")
         const redditClient = new RedditIntegration(
           process.env.REDDIT_CLIENT_ID,
           process.env.REDDIT_CLIENT_SECRET!,
@@ -110,6 +113,7 @@ export async function GET(
           }
         }
       }
+      */
     } catch (error) {
       console.error('Error fetching social media metrics:', error)
       // Continue without social metrics if API fails
