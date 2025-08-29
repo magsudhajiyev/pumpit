@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm --filter @pumpit/web build",
+  "devCommand": "pnpm --filter @pumpit/web dev",
+  "installCommand": "pnpm install",
+  "outputDirectory": "apps/web/.next"
+}
