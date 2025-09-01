@@ -18,10 +18,10 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">1. Company Information</h2>
           <p className="mb-4">
-            These Terms of Service ("Terms") govern your use of the PumpIt platform ("Service") operated by PumpIt Technologies ("Company", "we", "us", or "our"). 
+            These Terms of Service ("Terms") govern your use of the PumpIt platform ("Service") operated by Gringster LLC ("Company", "we", "us", or "our"). 
           </p>
           <p className="mb-4">
-            <strong>Company Name:</strong> PumpIt Technologies<br/>
+            <strong>Company Name:</strong> Gringster LLC<br/>
             <strong>Service Name:</strong> PumpIt<br/>
             <strong>Website:</strong> pumpit.to<br/>
             <strong>Contact:</strong> support@pumpit.to
