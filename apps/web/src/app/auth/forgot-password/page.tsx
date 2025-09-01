@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import toast from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,6 +21,7 @@ export default function ForgotPasswordPage() {
     // For now, just simulate the process
     await new Promise(resolve => setTimeout(resolve, 1000))
     
+    toast.success("Password reset link sent! Check your email.")
     setIsSubmitted(true)
     setIsLoading(false)
   }

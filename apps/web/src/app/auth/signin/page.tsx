@@ -3,6 +3,7 @@
 import { signIn, getSession } from "next-auth/react"
 import { useState } from "react"
 import Link from "next/link"
+import toast from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,11 +27,19 @@ export default function SignInPage() {
       })
       
       if (result?.ok) {
-        window.location.href = "/dashboard"
+        toast.success("Welcome back! Redirecting to dashboard...")
+        setTimeout(() => {
+          window.location.href = "/dashboard"
+        }, 1000)
       } else {
-        console.error("Sign in failed")
+        if (result?.error === "CredentialsSignin") {
+          toast.error("Invalid email or password. Please try again.")
+        } else {
+          toast.error("Sign in failed. Please try again.")
+        }
       }
     } catch (error) {
+      toast.error("An unexpected error occurred. Please try again.")
       console.error("Sign in error:", error)
     } finally {
       setIsLoading(false)

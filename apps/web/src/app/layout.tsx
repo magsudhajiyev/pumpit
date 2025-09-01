@@ -3,8 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers/session-provider";
 import { ConditionalNavbar } from "@/components/conditional-navbar";
+import { ConditionalFooter } from "@/components/conditional-footer";
+import { ConditionalMain } from "@/components/conditional-main";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Footer } from "@/components/footer";
 import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -34,10 +35,10 @@ export default function RootLayout({
           <Providers>
             <div className="flex flex-col min-h-screen">
               <ConditionalNavbar />
-              <main className="flex-1 pt-16">
+              <ConditionalMain>
                 {children}
-              </main>
-              <Footer />
+              </ConditionalMain>
+              <ConditionalFooter />
             </div>
           </Providers>
         </ThemeProvider>

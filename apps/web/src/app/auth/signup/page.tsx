@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import Link from "next/link"
+import toast from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -44,20 +45,20 @@ export default function SignUpPage() {
       const data = await response.json()
 
       if (response.ok) {
-        // Registration successful, show success message with smooth transition
-        alert("Account created successfully! Redirecting to sign in...")
-        
-        // Add a smooth transition delay before redirect
+        toast.success("Account created successfully! Redirecting to sign in...")
         setTimeout(() => {
           window.location.href = "/auth/signin"
         }, 1500)
       } else {
-        // Registration failed
-        alert(data.error || "Registration failed")
+        if (data.error?.includes("already exists")) {
+          toast.error("An account with this email already exists.")
+        } else {
+          toast.error(data.error || "Registration failed. Please try again.")
+        }
       }
     } catch (error) {
       console.error("Registration error:", error)
-      alert("Something went wrong. Please try again.")
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
