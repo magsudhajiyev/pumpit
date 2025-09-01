@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Menu, X } from "lucide-react"
 
 export function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const { data: session, status } = useSession()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -27,6 +28,16 @@ export function Navbar() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
+  }
+
+  const handleNavigateToSection = (sectionId: string) => {
+    if (pathname === '/') {
+      // If on homepage, just scroll to section
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      // If on another page, navigate to homepage with hash
+      router.push(`/#${sectionId}`)
+    }
   }
 
   return (
@@ -74,13 +85,13 @@ export function Navbar() {
               // Public navigation
               <>
                 <button 
-                  onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => handleNavigateToSection('features')}
                   className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
                 >
                   Features
                 </button>
                 <button 
-                  onClick={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => handleNavigateToSection('benefits')}
                   className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
                 >
                   Benefits
@@ -200,7 +211,7 @@ export function Navbar() {
                   {/* Mobile Public Navigation */}
                   <button 
                     onClick={() => {
-                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+                      handleNavigateToSection('features')
                       closeMobileMenu()
                     }}
                     className="block font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors py-2 w-full text-left"
@@ -209,7 +220,7 @@ export function Navbar() {
                   </button>
                   <button 
                     onClick={() => {
-                      document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })
+                      handleNavigateToSection('benefits')
                       closeMobileMenu()
                     }}
                     className="block font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors py-2 w-full text-left"

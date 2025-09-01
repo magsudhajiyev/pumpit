@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "@/providers/session-provider";
 import { ConditionalNavbar } from "@/components/conditional-navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Footer } from "@/components/footer";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,14 +23,20 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
-          defaultTheme="system"
+          defaultTheme="light"
           storageKey="pumpit-ui-theme"
         >
           <Providers>
-            <ConditionalNavbar />
-            {children}
+            <div className="flex flex-col min-h-screen">
+              <ConditionalNavbar />
+              <main className="flex-1 pt-16">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </Providers>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
