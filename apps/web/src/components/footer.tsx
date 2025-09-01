@@ -40,6 +40,12 @@ export function Footer() {
               >
                 Privacy
               </Link>
+              <Link 
+                href="/refund" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Refund
+              </Link>
             </nav>
             
             <Button

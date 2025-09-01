@@ -12,9 +12,38 @@ export default function PricingPage() {
           <h1 className="font-mono text-4xl md:text-5xl font-bold tracking-tight mb-4">
             Simple, Fair Pricing
           </h1>
-          <p className="font-mono text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose the plan that works best for your cross-promotion needs
+          <p className="font-mono text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+            Choose the plan that works best for your cross-promotion needs. Get more visibility, partnerships, and growth for your indie products.
           </p>
+          <div className="bg-muted/30 rounded-lg p-6 max-w-4xl mx-auto">
+            <h3 className="font-mono text-lg font-semibold mb-4">What You Get with PumpIt:</h3>
+            <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span>Cross-promotion opportunities</span>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span>Partner discovery & matching</span>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span>Performance analytics & tracking</span>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span>Community access</span>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span>Promotion campaign management</span>
+              </div>
+              <div className="flex items-center">
+                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span>Growth insights & recommendations</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Pricing Cards */}
@@ -26,30 +55,30 @@ export default function PricingPage() {
                 <Zap className="h-5 w-5 text-green-500 mr-2" />
                 <CardTitle className="text-xl">Free</CardTitle>
               </div>
-              <div className="text-3xl font-bold mb-2">$0</div>
-              <CardDescription>Perfect for getting started</CardDescription>
+              <div className="text-3xl font-bold mb-2">$0<span className="text-base font-normal text-muted-foreground">/forever</span></div>
+              <CardDescription>Perfect for getting started with cross-promotion</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Submit up to 2 products
+                  <span><strong>Submit up to 2 products</strong> for cross-promotion</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Unlimited promotions
+                  <span><strong>Unlimited promotion campaigns</strong> with other makers</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Basic analytics
+                  <span><strong>Basic analytics dashboard</strong> with traffic & conversion data</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Community access
+                  <span><strong>Community forum access</strong> to connect with indie makers</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Credit-based system
+                  <span><strong>Credit-based promotion system</strong> - promote to earn credits</span>
                 </li>
               </ul>
               <Button className="w-full font-mono" asChild>
@@ -73,33 +102,33 @@ export default function PricingPage() {
               <div className="text-3xl font-bold mb-2">
                 $29<span className="text-base font-normal text-muted-foreground">/month</span>
               </div>
-              <CardDescription>For serious indie makers</CardDescription>
+              <CardDescription>For serious indie makers looking to scale their reach</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Unlimited products
+                  <span><strong>Unlimited products</strong> for cross-promotion campaigns</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Priority placement
+                  <span><strong>Priority placement</strong> in partner discovery & matching</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Advanced analytics
+                  <span><strong>Advanced analytics suite</strong> with ROI tracking & insights</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Email support
+                  <span><strong>Priority email support</strong> within 24 hours</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Custom promotion templates
+                  <span><strong>Custom promotion templates</strong> & campaign tools</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  API access
+                  <span><strong>API access</strong> for automation & integrations</span>
                 </li>
               </ul>
               <Button className="w-full font-mono" asChild>
@@ -116,33 +145,33 @@ export default function PricingPage() {
                 <CardTitle className="text-xl">Enterprise</CardTitle>
               </div>
               <div className="text-3xl font-bold mb-2">Custom</div>
-              <CardDescription>For teams and agencies</CardDescription>
+              <CardDescription>For teams, agencies, and enterprise-scale operations</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Everything in Pro
+                  <span><strong>Everything in Pro</strong> plus enterprise features</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Team management
+                  <span><strong>Team management dashboard</strong> with role-based permissions</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  White-label options
+                  <span><strong>White-label platform</strong> with your branding</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Priority support
+                  <span><strong>Dedicated account manager</strong> & priority support</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  Custom integrations
+                  <span><strong>Custom integrations</strong> with your existing tools</span>
                 </li>
                 <li className="flex items-center">
                   <Check className="h-4 w-4 text-green-500 mr-2" />
-                  SLA guarantee
+                  <span><strong>99.9% uptime SLA guarantee</strong> with performance monitoring</span>
                 </li>
               </ul>
               <Button variant="outline" className="w-full font-mono" asChild>

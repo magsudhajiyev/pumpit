@@ -16,7 +16,20 @@ export default function PrivacyPage() {
         </p>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">1. Information We Collect</h2>
+          <h2 className="text-2xl font-semibold mb-4">1. Company Information</h2>
+          <p className="mb-4">
+            This Privacy Policy describes how PumpIt Technologies ("Company", "we", "us", or "our") collects, uses, and protects your information when you use the PumpIt platform ("Service").
+          </p>
+          <p className="mb-4">
+            <strong>Company Name:</strong> PumpIt Technologies<br/>
+            <strong>Service Name:</strong> PumpIt<br/>
+            <strong>Website:</strong> pumpit.to<br/>
+            <strong>Contact:</strong> privacy@pumpit.to
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">2. Information We Collect</h2>
           <p className="mb-4">
             We collect information you provide directly to us, such as when you create an account, add products, or contact us for support.
           </p>
@@ -29,7 +42,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">2. How We Use Your Information</h2>
+          <h2 className="text-2xl font-semibold mb-4">3. How We Use Your Information</h2>
           <ul className="list-disc list-inside space-y-2 mb-4">
             <li>Provide and improve our cross-promotion services</li>
             <li>Match you with relevant promotion opportunities</li>
@@ -40,7 +53,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">3. Information Sharing</h2>
+          <h2 className="text-2xl font-semibold mb-4">4. Information Sharing</h2>
           <p className="mb-4">
             We do not sell your personal information. We may share information in the following circumstances:
           </p>
@@ -53,14 +66,14 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">4. Data Security</h2>
+          <h2 className="text-2xl font-semibold mb-4">5. Data Security</h2>
           <p className="mb-4">
             We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">5. Your Rights</h2>
+          <h2 className="text-2xl font-semibold mb-4">6. Your Rights</h2>
           <p className="mb-4">
             You have the right to:
           </p>
@@ -73,21 +86,21 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">6. Cookies and Tracking</h2>
+          <h2 className="text-2xl font-semibold mb-4">7. Cookies and Tracking</h2>
           <p className="mb-4">
             We use cookies and similar technologies to improve your experience, analyze usage, and provide personalized content. You can control cookie preferences through your browser settings.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">7. Changes to This Policy</h2>
+          <h2 className="text-2xl font-semibold mb-4">8. Changes to This Policy</h2>
           <p className="mb-4">
             We may update this privacy policy periodically. We will notify you of any material changes via email or through our platform.
           </p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">8. Contact Us</h2>
+          <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
           <p className="mb-4">
             If you have questions about this privacy policy or our data practices, please contact us through our support channels.
           </p>

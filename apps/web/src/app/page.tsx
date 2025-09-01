@@ -725,6 +725,40 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 relative">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="font-mono text-3xl md:text-4xl font-bold mb-8 tracking-tight">
+            About PumpIt
+          </h2>
+          <div className="space-y-6 text-lg text-muted-foreground">
+            <p>
+              <strong className="text-foreground">PumpIt Technologies</strong> is the ultimate cross-promotion platform designed specifically for indie makers, solo developers, and small teams who want to grow their products through strategic partnerships.
+            </p>
+            <p>
+              Our mission is simple: help indie creators help each other. Instead of competing for attention in a crowded market, we believe in the power of collaboration and mutual support within the indie community.
+            </p>
+            <p>
+              Built by indie makers, for indie makers, PumpIt provides the tools, analytics, and community you need to discover relevant partners, create successful cross-promotion campaigns, and grow your reach authentically.
+            </p>
+          </div>
+          <div className="mt-12 grid md:grid-cols-3 gap-8 text-center">
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-primary">1000+</div>
+              <div className="text-sm text-muted-foreground">Indie Products</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-primary">50K+</div>
+              <div className="text-sm text-muted-foreground">Cross-Promotions</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl font-bold text-primary">2M+</div>
+              <div className="text-sm text-muted-foreground">Referral Visits</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Waitlist Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-blue-500/5">
         <div className="max-w-2xl mx-auto text-center">
