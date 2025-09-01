@@ -1,13 +1,9 @@
 import { NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import GoogleProvider from "next-auth/providers/google"
-import GitHubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "../database"
 
 export const authConfig: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -21,7 +17,6 @@ export const authConfig: NextAuthOptions = {
         }
 
         try {
-          // Find user in database
           const user = await prisma.user.findUnique({
             where: { email: credentials.email }
           })
@@ -30,7 +25,6 @@ export const authConfig: NextAuthOptions = {
             return null
           }
 
-          // Verify password
           const isPasswordValid = await bcrypt.compare(
             credentials.password,
             user.password
@@ -40,7 +34,6 @@ export const authConfig: NextAuthOptions = {
             return null
           }
 
-          // Return user without password
           return {
             id: user.id,
             email: user.email,
@@ -53,15 +46,6 @@ export const authConfig: NextAuthOptions = {
         }
       }
     }),
-    // Social providers - commented out for now, will enable later
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID!,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // }),
-    // GitHubProvider({
-    //   clientId: process.env.GITHUB_CLIENT_ID!,
-    //   clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    // }),
   ],
   pages: {
     signIn: "/auth/signin",
