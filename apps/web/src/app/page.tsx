@@ -107,58 +107,68 @@ export default function Home() {
         repeat: -1
       })
 
-      // Testimonials scroll animations and continuous sliding
+      // Testimonials entrance animations
       gsap.fromTo('.testimonial-card', 
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 50, scale: 0.9 },
         {
           opacity: 1, 
           y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power2.out",
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "back.out(1.7)",
           scrollTrigger: {
             trigger: testimonialsRef.current,
-            start: "top 80%",
+            start: "top 85%",
             toggleActions: "play none none reverse"
           }
         }
       )
 
-      // Continuous sliding animation for testimonials
+      // GSAP Testimonials sliding animation
       const testimonialsTrack = document.querySelector('.testimonials-track')
       if (testimonialsTrack) {
-        const testimonialCards = testimonialsTrack.querySelectorAll('.testimonial-card')
-        const cardWidth = 320 + 24 // card width + gap
-        const totalOriginalWidth = cardWidth * 6 // 6 original testimonials
+        const cardWidth = 344 // 320px width + 24px gap
+        const originalCardsCount = 6
+        const totalWidth = cardWidth * originalCardsCount
         
+        // Set initial position
         gsap.set(testimonialsTrack, { x: 0 })
         
-        // Infinite loop animation - slides from right to left continuously
-        gsap.to(testimonialsTrack, {
-          x: -totalOriginalWidth,
-          duration: 30,
+        // Create infinite sliding timeline with better performance
+        const slidingTween = gsap.to(testimonialsTrack, {
+          x: -totalWidth,
+          duration: 25,
           ease: "none",
           repeat: -1,
           modifiers: {
-            x: function(x) {
-              return gsap.utils.wrap(-totalOriginalWidth, 0, parseFloat(x)) + "px"
-            }
+            x: gsap.utils.unitize(gsap.utils.wrap(-totalWidth, 0))
           },
           scrollTrigger: {
             trigger: testimonialsRef.current,
             start: "top 80%",
-            toggleActions: "play pause resume pause"
+            end: "bottom 20%",
+            onEnter: () => {
+              console.log('🎬 Starting testimonials slider animation')
+              slidingTween.play()
+            },
+            onLeave: () => slidingTween.pause(),
+            onEnterBack: () => slidingTween.play(),
+            onLeaveBack: () => slidingTween.pause()
           }
         })
 
-        // Add hover pause effect
+        // Pause on hover, resume on leave
         testimonialsTrack.addEventListener('mouseenter', () => {
-          gsap.globalTimeline.pause()
+          slidingTween.pause()
         })
         
         testimonialsTrack.addEventListener('mouseleave', () => {
-          gsap.globalTimeline.resume()
+          slidingTween.play()
         })
+
+        // Store reference for cleanup
+        testimonialsTrack.setAttribute('data-gsap-tween', 'testimonials-slider')
       }
 
       // Benefits animations
@@ -465,11 +475,11 @@ export default function Home() {
           </div>
           
           {/* Testimonials Container */}
-          <div className="testimonials-container relative">
-            <div className="testimonials-track flex gap-6" style={{ width: 'max-content' }}>
-              {/* First set of testimonials */}
+          <div className="testimonials-container relative overflow-hidden">
+            <div className="testimonials-track flex gap-6 will-change-transform" style={{ width: 'max-content' }}>
+              {/* Original testimonials set */}
               {/* Testimonial 1 */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -494,7 +504,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 2 */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -519,7 +529,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 3 */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -544,7 +554,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 4 */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -569,7 +579,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 5 */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -594,7 +604,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 6 */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -620,7 +630,7 @@ export default function Home() {
 
               {/* Duplicate testimonials for seamless loop */}
               {/* Testimonial 1 - Duplicate */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -645,7 +655,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 2 - Duplicate */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
@@ -670,7 +680,7 @@ export default function Home() {
               </Card>
 
               {/* Testimonial 3 - Duplicate */}
-              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+              <Card className="testimonial-card font-mono w-80 flex-shrink-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="flex text-yellow-500">
