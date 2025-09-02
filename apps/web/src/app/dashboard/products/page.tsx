@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -32,7 +32,7 @@ interface ProductsResponse {
 
 const PRODUCTS_PER_PAGE = 6
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -255,5 +255,30 @@ export default function ProductsPage() {
         <div className="pb-12"></div>
       </div>
     </div>
+  )
+}
+
+function ProductsPageLoading() {
+  return (
+    <div className="min-h-screen bg-background pt-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="animate-pulse">
+          <div className="h-8 bg-muted rounded w-64 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-48 bg-muted rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsPageLoading />}>
+      <ProductsPageContent />
+    </Suspense>
   )
 }
