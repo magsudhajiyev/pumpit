@@ -48,10 +48,25 @@ export default function Home() {
   const benefitsRef = useRef(null)
   const testimonialsRef = useRef(null)
 
-  // GSAP Animations
+  // Handle hash navigation from external pages
   useEffect(() => {
     if (typeof window === 'undefined') return
 
+    // Check if there's a hash in the URL and scroll to it
+    const hash = window.location.hash
+    if (hash) {
+      const target = document.getElementById(hash.substring(1))
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth' })
+        }, 100) // Small delay to ensure page is loaded
+      }
+    }
+  }, [])
+
+  // GSAP Animations
+  useEffect(() => {
+    if (typeof window === 'undefined') return
 
     const ctx = gsap.context(() => {
       // Hero animations
@@ -170,6 +185,25 @@ export default function Home() {
         // Store reference for cleanup
         testimonialsTrack.setAttribute('data-gsap-tween', 'testimonials-slider')
       }
+
+      // Features scroll animations
+      gsap.fromTo('.feature-card', 
+        { opacity: 0, y: 50, scale: 0.9 },
+        {
+          opacity: 1, 
+          y: 0, 
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: featuresRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      )
 
       // Benefits animations
       gsap.fromTo('.benefit-item', 
@@ -704,6 +738,170 @@ export default function Home() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section ref={featuresRef} id="features" className="py-20 px-4 sm:px-6 lg:px-8 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-muted/50 border border-border/50 mb-4">
+              <span className="font-mono text-xs font-medium text-muted-foreground">FEATURES</span>
+            </div>
+            <h2 className="font-mono text-3xl md:text-4xl font-bold mb-4 tracking-tight">
+              Everything You Need to{" "}
+              <span className="text-primary">Scale Your Product</span>
+            </h2>
+            <p className="font-mono text-muted-foreground max-w-2xl mx-auto">
+              From submission to promotion tracking, we've built all the tools indie makers need
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0">
+              <CardHeader>
+                <Users className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
+                <CardTitle>For Product Owners</CardTitle>
+                <CardDescription>Submit your product and get authentic promotions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Submit your product with details
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Get promoted across multiple platforms
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Receive authentic reviews and feedback
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0">
+              <CardHeader>
+                <Zap className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
+                <CardTitle>For Promoters</CardTitle>
+                <CardDescription>Discover great products and earn credits</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Browse curated product list
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Promote products you genuinely love
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Earn credits for your own projects
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0">
+              <CardHeader>
+                <BarChart3 className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
+                <CardTitle>Real-Time Analytics</CardTitle>
+                <CardDescription>Track your promotion performance</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Monitor engagement metrics
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Track real Twitter/X analytics
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Optimize your campaigns
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0">
+              <CardHeader>
+                <Star className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
+                <CardTitle>Smart Verification</CardTitle>
+                <CardDescription>AI-powered content verification</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Automatic content analysis
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Quality scoring system
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Prevent spam and low-quality posts
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0">
+              <CardHeader>
+                <Users className="h-10 w-10 text-green-500 mb-4 transition-transform duration-300 hover:scale-110" />
+                <CardTitle>Multi-Platform Support</CardTitle>
+                <CardDescription>Promote across all major platforms</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    X (Twitter) integration
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    LinkedIn, Reddit, ProductHunt
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    More platforms coming soon
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0">
+              <CardHeader>
+                <Zap className="h-10 w-10 text-purple-500 mb-4 transition-transform duration-300 hover:scale-110" />
+                <CardTitle>Credit System</CardTitle>
+                <CardDescription>Fair exchange ecosystem</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Earn 10 credits per promotion
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Use credits for your products
+                  </li>
+                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
+                    <Check className="h-4 w-4 text-green-500 mr-2" />
+                    Transparent and fair system
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
