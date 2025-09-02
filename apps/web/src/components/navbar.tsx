@@ -7,6 +7,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { NotificationCenter } from "./notification-center"
 import { Menu, X } from "lucide-react"
+import { getFirstNameOrEmail } from "@/lib/utils/name"
 
 export function Navbar() {
   const router = useRouter()
@@ -69,6 +70,12 @@ export function Navbar() {
                   Promote
                 </Link>
                 <Link 
+                  href="/dashboard/promotions" 
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  My Promotions
+                </Link>
+                <Link 
                   href="/dashboard/analytics" 
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
@@ -112,7 +119,7 @@ export function Navbar() {
               <>
                 <NotificationCenter />
                 <span className="font-mono text-sm text-gray-600">
-                  Welcome, {session.user?.name || session.user?.email}
+                  Welcome, {getFirstNameOrEmail(session.user?.name, session.user?.email)}
                 </span>
                 <Button 
                   onClick={handleSignOut}
@@ -177,6 +184,13 @@ export function Navbar() {
                     Promote
                   </Link>
                   <Link 
+                    href="/dashboard/promotions" 
+                    className="block font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors py-2"
+                    onClick={closeMobileMenu}
+                  >
+                    My Promotions
+                  </Link>
+                  <Link 
                     href="/dashboard/analytics" 
                     className="block font-mono text-sm text-gray-600 hover:text-gray-900 transition-colors py-2"
                     onClick={closeMobileMenu}
@@ -194,7 +208,7 @@ export function Navbar() {
                   {/* Mobile User Info */}
                   <div className="pt-3 border-t border-gray-200">
                     <p className="font-mono text-sm text-gray-600 mb-3">
-                      Welcome, {session.user?.name || session.user?.email}
+                      Welcome, {getFirstNameOrEmail(session.user?.name, session.user?.email)}
                     </p>
                     <Button 
                       onClick={handleSignOut}

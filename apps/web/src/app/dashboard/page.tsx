@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Users, Zap, BarChart3, Clock, ExternalLink, Star } from "lucide-react"
 import Link from "next/link"
+import { getFirstName } from "@/lib/utils/name"
 
 interface Product {
   id: string
@@ -104,7 +105,7 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="font-mono text-3xl font-bold tracking-tight mb-2">
-            Welcome back, {session.user?.name || 'Maker'}
+            Welcome back, {getFirstName(session.user?.name) || 'Maker'}
           </h1>
           <p className="font-mono text-muted-foreground">
             Manage your products and track your cross-promotion performance
@@ -179,16 +180,18 @@ export default function DashboardPage() {
         </div>
 
         {/* Products Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* My Products */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-mono text-xl font-semibold">Your Products</h2>
-              <Link href="/dashboard/products">
-                <Button variant="ghost" size="sm" className="font-mono">
-                  View All
-                </Button>
-              </Link>
+              {products.length > 3 && (
+                <Link href="/dashboard/products">
+                  <Button variant="ghost" size="sm" className="font-mono">
+                    View All
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {products.length === 0 ? (

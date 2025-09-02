@@ -10,19 +10,26 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Plus, ExternalLink, Check, Clock, AlertCircle } from "lucide-react"
+import { ArrowLeft, Plus, ExternalLink, Check, Clock, AlertCircle, Search, Filter, Users, Star } from "lucide-react"
 import Link from "next/link"
+import { getFirstName } from "@/lib/utils/name"
 
 interface Product {
   id: string
   name: string
   description: string
-  website_url: string
-  logo_url?: string
+  websiteUrl: string
+  logoUrl?: string
   category: string
+  trackType: string
+  paidAmount?: number
+  createdAt: string
   user: {
     name?: string
     email: string
+  }
+  _count: {
+    promotions: number
   }
 }
 
@@ -45,13 +52,17 @@ export default function PromotePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedProduct, setSelectedProduct] = useState<string>('')
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState<string>("all")
   const [platform, setPlatform] = useState<string>('')
   const [content, setContent] = useState('')
   const [postUrls, setPostUrls] = useState<Record<string, string>>({})
   const [verifying, setVerifying] = useState<string | null>(null)
+  const [showPromotionForm, setShowPromotionForm] = useState(false)
 
   // Get product ID from URL query parameter if present
   const [productIdFromUrl, setProductIdFromUrl] = useState<string>('')
@@ -78,13 +89,18 @@ export default function PromotePage() {
     }
   }, [session])
 
+  useEffect(() => {
+    filterProducts()
+  }, [products, searchQuery, categoryFilter])
+
   // Set selected product when products are loaded and we have a product ID from URL
   useEffect(() => {
     if (products.length > 0 && productIdFromUrl) {
       // Check if the product ID from URL exists in our products list
       const productExists = products.find(p => p.id === productIdFromUrl)
       if (productExists) {
-        setSelectedProduct(productIdFromUrl)
+        setSelectedProduct(productExists)
+        setShowPromotionForm(true)
       }
     }
   }, [products, productIdFromUrl])
@@ -92,7 +108,7 @@ export default function PromotePage() {
   const fetchData = async () => {
     try {
       const [productsRes, promotionsRes] = await Promise.all([
-        fetch("/api/products/public"),
+        fetch("/api/products/community"),
         fetch("/api/promotions")
       ])
 
@@ -112,6 +128,26 @@ export default function PromotePage() {
     }
   }
 
+  const filterProducts = () => {
+    let filtered = products
+
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.user.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Category filter
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter(product => product.category === categoryFilter)
+    }
+
+    setFilteredProducts(filtered)
+  }
+
   const handleCreatePromotion = async () => {
     if (!selectedProduct || !platform || !content.trim()) {
       alert("Please fill in all required fields")
@@ -125,7 +161,7 @@ export default function PromotePage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productId: selectedProduct,
+          productId: selectedProduct.id,
           platform,
           content: content.trim(),
         }),
@@ -134,10 +170,14 @@ export default function PromotePage() {
       if (response.ok) {
         const promotion = await response.json()
         setPromotions(prev => [promotion, ...prev])
-        setSelectedProduct('')
+        setSelectedProduct(null)
         setPlatform('')
         setContent('')
-        alert("Promotion created successfully! Please post it on social media and then verify it.")
+        setShowPromotionForm(false)
+        alert("Promotion created successfully! Redirecting to track your promotion...")
+        setTimeout(() => {
+          router.push("/dashboard/promotions")
+        }, 1500)
       } else {
         const error = await response.json()
         alert(error.error || "Failed to create promotion")
@@ -146,6 +186,18 @@ export default function PromotePage() {
       console.error("Failed to create promotion:", error)
       alert("Failed to create promotion")
     }
+  }
+
+  const handleSelectProduct = (product: Product) => {
+    setSelectedProduct(product)
+    setShowPromotionForm(true)
+  }
+
+  const handleBackToProducts = () => {
+    setSelectedProduct(null)
+    setShowPromotionForm(false)
+    setPlatform('')
+    setContent('')
   }
 
   const handleVerifyPromotion = async (promotionId: string) => {
@@ -241,177 +293,271 @@ export default function PromotePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 px-4">
+    <div className="min-h-screen bg-background pt-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="font-mono">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Promote Products</h1>
-            <p className="text-gray-600 mt-1">Earn credits by promoting other products</p>
+            <h1 className="font-mono text-3xl font-bold tracking-tight">
+              {showPromotionForm ? 'Create Promotion' : 'Promote Products'}
+            </h1>
+            <p className="font-mono text-muted-foreground mt-1">
+              {showPromotionForm 
+                ? `Promoting "${selectedProduct?.name}"`
+                : 'Choose a product to promote and earn credits'
+              }
+            </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Create Promotion */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Create New Promotion
-              </CardTitle>
-              <CardDescription>
-                Choose a product to promote and earn credits
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="product">Product to Promote</Label>
-                <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a product" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {products.map((product) => (
-                      <SelectItem key={product.id} value={product.id}>
-                        <div className="flex items-center gap-2">
-                          {product.logo_url && (
-                            <img src={product.logo_url} alt="" className="w-4 h-4 rounded" />
-                          )}
-                          <span>{product.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="platform">Platform</Label>
-                <Select value={platform} onValueChange={setPlatform}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select platform" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="X">X (Twitter)</SelectItem>
-                    <SelectItem value="REDDIT">Reddit</SelectItem>
-                    <SelectItem value="LINKEDIN">LinkedIn</SelectItem>
-                    <SelectItem value="PRODUCTHUNT">ProductHunt</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="content">Promotion Content</Label>
-                <Textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Write your promotion content here..."
-                  rows={4}
-                />
-              </div>
-
-              <Button onClick={handleCreatePromotion} className="w-full">
-                Create Promotion
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* My Promotions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>My Promotions</CardTitle>
-              <CardDescription>
-                Track your promotion status and earnings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {promotions.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No promotions yet</p>
-                  </div>
-                ) : (
-                  promotions.map((promotion) => (
-                    <div key={promotion.id} className="border rounded-lg p-4">
-                      <div className="flex items-start justify-between mb-3">
-                                               <div className="flex items-center gap-2">
-                         <span className="text-lg">{getPlatformIcon(promotion.platform)}</span>
-                         <div>
-                           <h3 className="font-medium">{promotion.product?.name || 'Unknown Product'}</h3>
-                           <p className="text-sm text-gray-600">{promotion.platform}</p>
-                         </div>
-                       </div>
-                        {getStatusBadge(promotion.status)}
-                      </div>
-
-                      <p className="text-sm text-gray-700 mb-3 line-clamp-2">
-                        {promotion.content}
+        {showPromotionForm ? (
+          /* Promotion Form */
+          <div className="max-w-2xl mx-auto">
+            <Card className="font-mono">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Plus className="h-5 w-5" />
+                    Create Promotion
+                  </CardTitle>
+                  <Button variant="ghost" size="sm" onClick={handleBackToProducts}>
+                    <ArrowLeft className="h-4 w-4 mr-1" />
+                    Back
+                  </Button>
+                </div>
+                <CardDescription>
+                  You're promoting "{selectedProduct?.name}"
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Selected Product Preview */}
+                <div className="border rounded-lg p-4 bg-muted/50">
+                  <div className="flex items-start gap-3">
+                    {selectedProduct?.logoUrl && (
+                      <img 
+                        src={selectedProduct.logoUrl} 
+                        alt={selectedProduct.name}
+                        className="w-12 h-12 rounded object-cover"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{selectedProduct?.name}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {selectedProduct?.description}
                       </p>
-
-                                             {promotion.trackingLink?.trackedUrl && (
-                         <div className="flex items-center gap-2 mb-3">
-                           <ExternalLink className="h-3 w-3 text-gray-400" />
-                           <a
-                             href={promotion.trackingLink.trackedUrl}
-                             target="_blank"
-                             rel="noopener noreferrer"
-                             className="text-xs text-blue-600 hover:underline"
-                           >
-                             {promotion.trackingLink.trackedUrl}
-                           </a>
-                         </div>
-                       )}
-
-                                             {promotion.status === 'PENDING' && (
-                         <div className="space-y-2">
-                           <Input
-                             placeholder="Enter your post URL"
-                             value={postUrls[promotion.id] || ''}
-                             onChange={(e) => setPostUrls(prev => ({ 
-                               ...prev, 
-                               [promotion.id]: e.target.value 
-                             }))}
-                           />
-                           <Button
-                             onClick={() => handleVerifyPromotion(promotion.id)}
-                             disabled={verifying === promotion.id}
-                             size="sm"
-                             className="w-full"
-                           >
-                             {verifying === promotion.id ? (
-                               <>Verifying...</>
-                             ) : (
-                               <>Verify Promotion</>
-                             )}
-                           </Button>
-                         </div>
-                       )}
-
-                      {promotion.status === 'VERIFIED' && (
-                        <div className="flex items-center gap-2 text-sm text-green-600">
-                          <Check className="h-4 w-4" />
-                          <span>Earned {promotion.creditsEarned} credits</span>
-                        </div>
-                      )}
-
-                      <div className="text-xs text-gray-400 mt-2">
-                        Created {new Date(promotion.createdAt).toLocaleDateString()}
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge variant="outline" className="text-xs">
+                          {selectedProduct?.category}
+                        </Badge>
+                        <Badge 
+                          variant={selectedProduct?.trackType === 'PAID' ? 'default' : 'secondary'}
+                          className="text-xs"
+                        >
+                          {selectedProduct?.trackType === 'PAID' 
+                            ? `$${selectedProduct?.paidAmount}` 
+                            : 'Credits'
+                          }
+                        </Badge>
                       </div>
                     </div>
-                  ))
-                )}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="platform">Platform</Label>
+                  <Select value={platform} onValueChange={setPlatform}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select platform" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="X">𝕏 (Twitter)</SelectItem>
+                      <SelectItem value="REDDIT">📱 Reddit</SelectItem>
+                      <SelectItem value="LINKEDIN">💼 LinkedIn</SelectItem>
+                      <SelectItem value="PRODUCTHUNT">🚀 ProductHunt</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="content">Promotion Content</Label>
+                  <Textarea
+                    id="content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Write your promotion content here..."
+                    rows={4}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Write an authentic, engaging post about this product
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button onClick={handleCreatePromotion} className="flex-1 font-mono">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Promotion
+                  </Button>
+                  <Link href="/dashboard/promotions">
+                    <Button variant="outline" className="font-mono">
+                      View My Promotions
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          /* Products Grid */
+          <div>
+            {/* Filters */}
+            <Card className="font-mono mb-8">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center">
+                  <Filter className="mr-2 h-5 w-5" />
+                  Find Products to Promote
+                </CardTitle>
+                <CardDescription>
+                  Browse and filter community products to promote
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-1 block">Search Products</Label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search products or makers..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-9"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-medium mb-1 block">Category</Label>
+                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="All categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="SAAS">SaaS</SelectItem>
+                        <SelectItem value="NEWSLETTER">Newsletter</SelectItem>
+                        <SelectItem value="TOOL">Tool</SelectItem>
+                        <SelectItem value="OTHER">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Results Count */}
+            <div className="mb-6">
+              <p className="font-mono text-sm text-muted-foreground">
+                Found {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} to promote
+              </p>
+            </div>
+
+            {/* Products Grid */}
+            {filteredProducts.length === 0 ? (
+              <Card className="font-mono">
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <Star className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No products found</h3>
+                  <p className="text-muted-foreground text-center">
+                    {searchQuery || categoryFilter !== "all" 
+                      ? "Try adjusting your filters to see more products"
+                      : "No products available for promotion at the moment"
+                    }
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {filteredProducts.map((product) => (
+                  <Card key={product.id} className="font-mono hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            {product.logoUrl && (
+                              <img 
+                                src={product.logoUrl} 
+                                alt={product.name}
+                                className="w-8 h-8 rounded object-cover"
+                              />
+                            )}
+                            <div>
+                              <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
+                              <p className="text-xs text-muted-foreground">
+                                by {getFirstName(product.user.name) || 'Anonymous'}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              {product.category}
+                            </Badge>
+                            <Badge 
+                              variant={product.trackType === 'PAID' ? 'default' : 'secondary'}
+                              className="text-xs"
+                            >
+                              {product.trackType === 'PAID' ? `$${product.paidAmount}` : 'Credits'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <CardDescription className="text-sm line-clamp-3">
+                        {product.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <Users className="mr-1 h-3 w-3" />
+                          {product._count.promotions} promotions
+                        </div>
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <Clock className="mr-1 h-3 w-3" />
+                          {new Date(product.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          className="flex-1 font-mono"
+                          onClick={() => handleSelectProduct(product)}
+                        >
+                          <Plus className="mr-1 h-3 w-3" />
+                          Promote
+                        </Button>
+                        <Button variant="outline" size="sm" asChild>
+                          <a 
+                            href={product.websiteUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

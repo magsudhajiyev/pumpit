@@ -25,6 +25,20 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Get pagination parameters
+    const { searchParams } = new URL(request.url)
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const skip = (page - 1) * limit
+
+    // Get total count for pagination
+    const totalCount = await prisma.product.count({
+      where: {
+        userId: user.id,
+      },
+    })
+
+    // Get paginated products
     const products = await prisma.product.findMany({
       where: {
         userId: user.id,
@@ -39,9 +53,26 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take: limit,
     })
 
-    return NextResponse.json(products)
+    // If no pagination parameters provided, return simple array (for backward compatibility)
+    if (!searchParams.has('page') && !searchParams.has('limit')) {
+      return NextResponse.json(products)
+    }
+
+    // Return paginated response
+    const totalPages = Math.ceil(totalCount / limit)
+    
+    return NextResponse.json({
+      products,
+      totalCount,
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    })
   } catch (error) {
     console.error("Products API error:", error)
     return NextResponse.json(

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authConfig } from "@/lib/auth"
 import { prisma } from "@/lib/database"
+import { getFirstNameOrEmail } from "@/lib/utils/name"
 
 export async function POST(request: NextRequest) {
   try {
@@ -113,12 +114,12 @@ export async function POST(request: NextRequest) {
       data: {
         userId: promotion.product.userId,
         title: "New Promotion Verified!",
-        content: `Your product "${promotion.product.name}" was promoted on LinkedIn by ${user.name || user.email}`,
+        content: `Your product "${promotion.product.name}" was promoted on LinkedIn by ${getFirstNameOrEmail(user.name, user.email)}`,
         type: "PROMOTION_VERIFIED",
         data: {
           promotionId: promotion.id,
           platform: "LINKEDIN",
-          promoterName: user.name || user.email
+          promoterName: getFirstNameOrEmail(user.name, user.email)
         }
       }
     })

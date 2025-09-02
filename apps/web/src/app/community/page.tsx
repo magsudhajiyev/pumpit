@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Users, Star, ExternalLink, Search, Filter, TrendingUp, Clock, MessageSquare } from "lucide-react"
 import Link from "next/link"
+import { getFirstName } from "@/lib/utils/name"
 
 interface Product {
   id: string
@@ -280,7 +281,7 @@ export default function CommunityPage() {
                         <div>
                           <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
                           <p className="text-xs text-muted-foreground">
-                            by {product.user.name || 'Anonymous'}
+                            by {getFirstName(product.user.name) || 'Anonymous'}
                           </p>
                         </div>
                       </div>
@@ -337,6 +338,9 @@ export default function CommunityPage() {
             ))}
           </div>
         )}
+
+        {/* Add bottom padding to prevent footer overlap */}
+        <div className="pb-12"></div>
       </div>
     </div>
   )

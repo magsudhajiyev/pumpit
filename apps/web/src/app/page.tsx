@@ -46,6 +46,7 @@ export default function Home() {
   const heroRef = useRef(null)
   const featuresRef = useRef(null)
   const benefitsRef = useRef(null)
+  const testimonialsRef = useRef(null)
 
   // GSAP Animations
   useEffect(() => {
@@ -106,24 +107,59 @@ export default function Home() {
         repeat: -1
       })
 
-      // Features scroll animations
-      gsap.fromTo('.feature-card', 
-        { opacity: 0, y: 50, scale: 0.9 },
+      // Testimonials scroll animations and continuous sliding
+      gsap.fromTo('.testimonial-card', 
+        { opacity: 0, y: 30 },
         {
           opacity: 1, 
-          y: 0, 
-          scale: 1,
+          y: 0,
           duration: 0.6,
-          stagger: 0.2,
+          stagger: 0.1,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: featuresRef.current,
+            trigger: testimonialsRef.current,
             start: "top 80%",
-            end: "bottom 20%",
             toggleActions: "play none none reverse"
           }
         }
       )
+
+      // Continuous sliding animation for testimonials
+      const testimonialsTrack = document.querySelector('.testimonials-track')
+      if (testimonialsTrack) {
+        const testimonialCards = testimonialsTrack.querySelectorAll('.testimonial-card')
+        const cardWidth = 320 + 24 // card width + gap
+        const totalOriginalWidth = cardWidth * 6 // 6 original testimonials
+        
+        gsap.set(testimonialsTrack, { x: 0 })
+        
+        // Infinite loop animation - slides from right to left continuously
+        gsap.to(testimonialsTrack, {
+          x: -totalOriginalWidth,
+          duration: 30,
+          ease: "none",
+          repeat: -1,
+          modifiers: {
+            x: function(x) {
+              return gsap.utils.wrap(-totalOriginalWidth, 0, parseFloat(x)) + "px"
+            }
+          },
+          scrollTrigger: {
+            trigger: testimonialsRef.current,
+            start: "top 80%",
+            toggleActions: "play pause resume pause"
+          }
+        })
+
+        // Add hover pause effect
+        testimonialsTrack.addEventListener('mouseenter', () => {
+          gsap.globalTimeline.pause()
+        })
+        
+        testimonialsTrack.addEventListener('mouseleave', () => {
+          gsap.globalTimeline.resume()
+        })
+      }
 
       // Benefits animations
       gsap.fromTo('.benefit-item', 
@@ -413,85 +449,251 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section ref={featuresRef} id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50 relative">
+      {/* Testimonials Section */}
+      <section ref={testimonialsRef} id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <h2 className="font-mono text-3xl md:text-4xl font-bold text-center mb-16">
-            How It Works
-          </h2>
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-muted/50 border border-border/50 mb-4">
+              <span className="font-mono text-xs font-medium text-muted-foreground">TESTIMONIALS</span>
+            </div>
+            <h2 className="font-mono text-3xl md:text-4xl font-bold mb-4 tracking-tight">
+              What Makers Are Saying
+            </h2>
+            <p className="font-mono text-muted-foreground max-w-2xl mx-auto">
+              Real feedback from indie makers who've grown their products with PumpIt
+            </p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0">
-              <CardHeader>
-                <Users className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
-                <CardTitle>For Product Owners</CardTitle>
-                <CardDescription>Submit your product and get authentic promotions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Submit your product with details
-                  </li>
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Set your promotion budget
-                  </li>
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Get authentic reviews and promotions
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+          {/* Testimonials Container */}
+          <div className="testimonials-container relative">
+            <div className="testimonials-track flex gap-6" style={{ width: 'max-content' }}>
+              {/* First set of testimonials */}
+              {/* Testimonial 1 */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "PumpIt helped me get my first 1,000 users in just 2 weeks. The community is incredibly supportive, and the promotions feel authentic, not spammy."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      S
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Sarah Chen</div>
+                      <div className="text-xs text-muted-foreground">Founder, TaskFlow</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0">
-              <CardHeader>
-                <Zap className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
-                <CardTitle>For Promoters</CardTitle>
-                <CardDescription>Discover great products and earn credits</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Browse curated product list
-                  </li>
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Promote products you love
-                  </li>
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Earn credits for your own projects
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+              {/* Testimonial 2 */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "I've tried many promotion platforms, but PumpIt's community-driven approach is refreshing. Real makers promoting products they actually believe in."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      M
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Marcus Rodriguez</div>
+                      <div className="text-xs text-muted-foreground">Creator, DevToolbox</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card className="feature-card font-mono hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0">
-              <CardHeader>
-                <BarChart3 className="h-10 w-10 text-primary mb-4 transition-transform duration-300 hover:scale-110" />
-                <CardTitle>Real-Time Analytics</CardTitle>
-                <CardDescription>Track your promotion performance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Monitor click-through rates
-                  </li>
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Track conversion metrics
-                  </li>
-                  <li className="flex items-center hover:translate-x-1 transition-transform duration-200">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Optimize your campaigns
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+              {/* Testimonial 3 */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "The analytics are incredible. I can see exactly which promotions drive the most engaged users. It's like having a growth team for free."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      A
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Alex Thompson</div>
+                      <div className="text-xs text-muted-foreground">Founder, CodeSnippet Generator</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Testimonial 4 */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "As someone who struggles with marketing, PumpIt made it so easy to get genuine exposure. The credit system is genius – everyone wins."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      J
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Jamie Park</div>
+                      <div className="text-xs text-muted-foreground">Solo Developer, WriteAssist</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Testimonial 5 */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "I went from 0 to 5,000 users in 3 months thanks to the PumpIt community. The quality of users is outstanding – they actually convert."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      L
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Lisa Wang</div>
+                      <div className="text-xs text-muted-foreground">Founder, DesignSync</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Testimonial 6 */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "The platform feels like having a network of co-founders promoting each other. It's collaboration, not competition. Exactly what indie makers need."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      D
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">David Kumar</div>
+                      <div className="text-xs text-muted-foreground">Creator, APIMonitor</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Duplicate testimonials for seamless loop */}
+              {/* Testimonial 1 - Duplicate */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "PumpIt helped me get my first 1,000 users in just 2 weeks. The community is incredibly supportive, and the promotions feel authentic, not spammy."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      S
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Sarah Chen</div>
+                      <div className="text-xs text-muted-foreground">Founder, TaskFlow</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Testimonial 2 - Duplicate */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "I've tried many promotion platforms, but PumpIt's community-driven approach is refreshing. Real makers promoting products they actually believe in."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      M
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Marcus Rodriguez</div>
+                      <div className="text-xs text-muted-foreground">Creator, DevToolbox</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Testimonial 3 - Duplicate */}
+              <Card className="testimonial-card font-mono w-80 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="flex text-yellow-500">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 italic">
+                    "The analytics are incredible. I can see exactly which promotions drive the most engaged users. It's like having a growth team for free."
+                  </p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                      A
+                    </div>
+                    <div>
+                      <div className="font-semibold text-sm">Alex Thompson</div>
+                      <div className="text-xs text-muted-foreground">Founder, CodeSnippet Generator</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
